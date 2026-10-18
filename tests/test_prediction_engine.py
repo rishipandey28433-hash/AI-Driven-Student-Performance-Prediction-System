@@ -144,6 +144,43 @@ class TestPredictionEngine(unittest.TestCase):
         self.assertNotIn("roll", MODEL_FEATURE_NAMES)
         self.assertEqual(len(MODEL_FEATURE_NAMES), 10)
 
+    def test_below_average_rule_for_low_hours_and_attendance(self):
+        # Test 1: hours = 2, attendance = 9
+        res1 = predict_single_student(
+            student_name="Test Student",
+            roll_number="001",
+            academic_inputs={"Hours_Studied": 2, "Attendance": 9}
+        )
+        self.assertEqual(res1["predicted_category"], "Below Average")
+        self.assertEqual(res1["risk_level"], "High Risk")
+
+        # Test 2: hours = 1, attendance = 5
+        res2 = predict_single_student(
+            student_name="Test Student 2",
+            roll_number="002",
+            academic_inputs={"Hours_Studied": 1, "Attendance": 5}
+        )
+        self.assertEqual(res2["predicted_category"], "Below Average")
+        self.assertEqual(res2["risk_level"], "High Risk")
+
+        # Test 3: hours = 2, attendance = 10
+        res3 = predict_single_student(
+            student_name="Test Student 3",
+            roll_number="003",
+            academic_inputs={"Hours_Studied": 2, "Attendance": 10}
+        )
+        self.assertEqual(res3["predicted_category"], "Below Average")
+        self.assertEqual(res3["risk_level"], "High Risk")
+
+        # Test 4: Normal student should not be affected
+        res4 = predict_single_student(
+            student_name="Good Student",
+            roll_number="004",
+            academic_inputs={"Hours_Studied": 20, "Attendance": 85}
+        )
+        self.assertIn(res4["predicted_category"], ["Good", "Excellent", "Average"])
+        self.assertNotEqual(res4["predicted_category"], "Below Average")
+
 
 if __name__ == "__main__":
     unittest.main()

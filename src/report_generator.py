@@ -159,7 +159,9 @@ def generate_student_pdf(record: Dict[str, Any]) -> bytes:
     confidence = record.get("confidence", 0.0)
 
     # Color badge based on category
-    cat_bg = colors.HexColor("#DCFCE7") if category in ["Excellent", "Good"] else colors.HexColor("#FEF3C7")
+    cat_bg = colors.HexColor("#DCFCE7") if category in ["Excellent", "Good"] else (
+        colors.HexColor("#FEE2E2") if category in ["Poor", "Below Average"] else colors.HexColor("#FEF3C7")
+    )
     risk_bg = colors.HexColor("#FEE2E2") if risk_level == "High Risk" else (
         colors.HexColor("#FEF3C7") if risk_level == "Medium Risk" else colors.HexColor("#DCFCE7")
     )
@@ -172,7 +174,14 @@ def generate_student_pdf(record: Dict[str, Any]) -> bytes:
             Paragraph("<b>Model Confidence</b>", cell_bold)
         ],
         [
-            Paragraph(f"<b>{category}</b>", ParagraphStyle("C", parent=cell_bold, fontSize=11, textColor=colors.HexColor("#15803D") if category in ["Excellent", "Good"] else colors.HexColor("#B45309"))),
+            Paragraph(f"<b>{category}</b>", ParagraphStyle(
+                "C",
+                parent=cell_bold,
+                fontSize=11,
+                textColor=colors.HexColor("#15803D") if category in ["Excellent", "Good"] else (
+                    colors.HexColor("#B91C1C") if category in ["Poor", "Below Average"] else colors.HexColor("#B45309")
+                )
+            )),
             Paragraph(f"<b>{risk_level}</b>", ParagraphStyle("R", parent=cell_bold, fontSize=11, textColor=colors.HexColor("#B91C1C") if risk_level == "High Risk" else colors.HexColor("#15803D"))),
             Paragraph(f"<b>{score} / 100</b>", cell_bold),
             Paragraph(f"<b>{confidence}%</b>", cell_bold)

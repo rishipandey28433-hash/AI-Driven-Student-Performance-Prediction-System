@@ -239,7 +239,15 @@ def predict_single_student(
             class_probabilities[str(cls)] = round(float(prob) * 100, 1)
         confidence = round(float(np.max(probabilities)) * 100, 1)
 
-    # 7. Risk calculation and suggestions
+    # 7. Critical academic threshold rule
+    # If hours studied <= 2 and attendance rate <= 10% (less than 10%),
+    # classify predicted category as "Below Average" with High Risk.
+    if hours_studied <= 2 and attendance <= 10:
+        predicted_label = "Below Average"
+        confidence = 96.0
+        class_probabilities = {"Below Average": 96.0, **class_probabilities}
+
+    # 8. Risk calculation and suggestions
     risk_level, risk_score, reasons = calculate_risk(
         hours_studied=hours_studied,
         attendance=attendance,
@@ -257,6 +265,20 @@ def predict_single_student(
         access_to_resources=access_to_resources,
         sleep_hours=sleep_hours
     )
+
+    if hours_studied <= 2 and attendance <= 10:
+        risk_level = "High Risk"
+        critical_reasons = []
+        if attendance <= 10:
+            critical_reasons.append("Critical: Attendance rate is severely low (<=10%)")
+        if hours_studied <= 2:
+            critical_reasons.append("Critical: Weekly study hours are severely low (<=2 hrs/week)")
+        for cr in reversed(critical_reasons):
+            if cr not in reasons:
+                reasons.insert(0, cr)
+        urgent_sugg = "Urgent: Immediate academic intervention and counseling required to address critically low attendance and study hours."
+        if urgent_sugg not in suggestions:
+            suggestions.insert(0, urgent_sugg)
 
     performance_score = calculate_performance_score(
         attendance=attendance,

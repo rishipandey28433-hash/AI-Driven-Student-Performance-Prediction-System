@@ -119,6 +119,7 @@ st.markdown("""
     .badge-excellent { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
     .badge-good { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.4); }
     .badge-average { background-color: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .badge-below-average { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
     .badge-poor { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
     
     .badge-low-risk { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
@@ -302,7 +303,7 @@ if nav_choice == "🔮 New Student Prediction":
                     </p>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <span class="student-badge badge-{res['predicted_category'].lower()}">Predicted: {res['predicted_category']}</span>
+                    <span class="student-badge badge-{res['predicted_category'].lower().replace(' ', '-')}">Predicted: {res['predicted_category']}</span>
                     <span class="student-badge badge-{'high' if 'High' in res['risk_level'] else ('med' if 'Medium' in res['risk_level'] else 'low')}-risk">{res['risk_level']}</span>
                 </div>
             </div>
@@ -426,7 +427,7 @@ elif nav_choice == "📁 Student Records & History":
     with f1:
         search_query = st.text_input("🔍 Search Student Name or Roll Number", placeholder="Type name or roll number...")
     with f2:
-        category_filter = st.selectbox("Category Filter", ["All", "Excellent", "Good", "Average", "Poor"], index=0)
+        category_filter = st.selectbox("Category Filter", ["All", "Excellent", "Good", "Average", "Below Average", "Poor"], index=0)
     with f3:
         risk_filter = st.selectbox("Risk Level Filter", ["All", "Low Risk", "Medium Risk", "High Risk"], index=0)
     with f4:
