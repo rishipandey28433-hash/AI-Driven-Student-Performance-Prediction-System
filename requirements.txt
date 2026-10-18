@@ -1,3 +1,4 @@
+
 altair==6.2.2
 anyio==4.14.1
 attrs==26.1.0
@@ -35,6 +36,7 @@ pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 python-multipart==0.0.32
 referencing==0.37.0
+reportlab>=4.0.0
 requests==2.34.2
 rpds-py==2026.6.3
 scikit-learn==1.9.0
