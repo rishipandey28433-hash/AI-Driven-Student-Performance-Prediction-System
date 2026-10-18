@@ -72,29 +72,42 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling
+# Custom Styling - Full Dark & Light Mode Theme Adaptive
 st.markdown("""
 <style>
-    /* Metric container styling */
+    /* Metric container styling - Theme adaptive */
     div[data-testid="stMetric"] {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background-color: var(--secondary-background-color) !important;
+        border: 1px solid rgba(128, 128, 128, 0.25) !important;
         padding: 16px;
         border-radius: 10px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     div[data-testid="stMetric"]:hover {
-        border-color: #cbd5e1;
+        border-color: rgba(128, 128, 128, 0.45) !important;
+    }
+    div[data-testid="stMetric"] label {
+        color: var(--text-color) !important;
+        font-weight: 500 !important;
+        opacity: 0.85;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: var(--text-color) !important;
+        font-weight: 700 !important;
+    }
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] * {
+        color: var(--text-color) !important;
     }
     
-    /* Custom card classes */
+    /* Custom card classes - Theme adaptive */
     .edu-card {
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
+        background-color: var(--secondary-background-color);
+        color: var(--text-color);
+        border: 1px solid rgba(128, 128, 128, 0.25);
         border-radius: 10px;
-        padding: 20px;
+        padding: 18px 24px;
         margin-bottom: 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
     .student-badge {
         display: inline-block;
@@ -103,21 +116,22 @@ st.markdown("""
         font-weight: 600;
         font-size: 0.9rem;
     }
-    .badge-excellent { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-    .badge-good { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-    .badge-average { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-    .badge-poor { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-excellent { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .badge-good { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-average { background-color: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .badge-poor { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
     
-    .badge-low-risk { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
-    .badge-med-risk { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-    .badge-high-risk { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .badge-low-risk { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .badge-med-risk { background-color: rgba(234, 179, 8, 0.2); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .badge-high-risk { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); }
     
     .disclaimer-box {
-        font-size: 0.8rem;
-        color: #64748b;
-        background-color: #f8fafc;
-        border-left: 3px solid #94a3b8;
-        padding: 10px 14px;
+        font-size: 0.85rem;
+        color: var(--text-color);
+        opacity: 0.85;
+        background-color: var(--secondary-background-color);
+        border-left: 3px solid #3b82f6;
+        padding: 12px 16px;
         margin-top: 25px;
         border-radius: 0 6px 6px 0;
     }
@@ -277,19 +291,18 @@ if nav_choice == "🔮 New Student Prediction":
 
         # Prominent Student Identity Banner
         st.markdown(f"""
-        <div class="edu-card" style="border-left: 5px solid #2563eb; background-color: #f8fafc;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <div class="edu-card" style="border-left: 5px solid #3b82f6;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <div>
-                    <h3 style="margin: 0; color: #1e3a8a;">{res['student_name']}</h3>
-                    <p style="margin: 4px 0 0 0; color: #475569;">
-                        <b>Roll Number:</b> <code>{res['roll_number']}</code> &nbsp;|&nbsp; 
-                        <b>Record ID:</b> #{res.get('id', 'N/A')} &nbsp;|&nbsp; 
+                    <h2 style="margin: 0; font-size: 1.6rem; font-weight: 700; color: var(--text-color);">{res['student_name']}</h2>
+                    <p style="margin: 6px 0 0 0; color: var(--text-color); opacity: 0.85; font-size: 0.95rem;">
+                        <b>Roll Number:</b> <code style="padding: 2px 8px; border-radius: 4px;">{res['roll_number']}</code> &nbsp;•&nbsp; 
+                        <b>Record ID:</b> #{res.get('id', 'N/A')} &nbsp;•&nbsp; 
                         <b>Assessment Time:</b> Just now
                     </p>
                 </div>
-                <div style="margin-top: 8px;">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <span class="student-badge badge-{res['predicted_category'].lower()}">Predicted: {res['predicted_category']}</span>
-                    &nbsp;
                     <span class="student-badge badge-{'high' if 'High' in res['risk_level'] else ('med' if 'Medium' in res['risk_level'] else 'low')}-risk">{res['risk_level']}</span>
                 </div>
             </div>
@@ -480,12 +493,13 @@ elif nav_choice == "📁 Student Records & History":
 
         if target_record:
             st.markdown(f"""
-            <div class="edu-card" style="border-left: 5px solid #2563eb; background-color: #f8fafc;">
-                <h4>{target_record['student_name']} (Roll #{target_record['roll_number']})</h4>
-                <p><b>Prediction Date:</b> {target_record['prediction_date']} &nbsp;|&nbsp; 
-                   <b>Category:</b> {target_record['predicted_category']} &nbsp;|&nbsp; 
-                   <b>Risk:</b> {target_record['risk_level']} &nbsp;|&nbsp; 
-                   <b>Performance Score:</b> {target_record['performance_score']}/100 &nbsp;|&nbsp; 
+            <div class="edu-card" style="border-left: 5px solid #3b82f6;">
+                <h3 style="margin: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-color);">{target_record['student_name']} (Roll #{target_record['roll_number']})</h3>
+                <p style="margin: 6px 0 0 0; color: var(--text-color); opacity: 0.85; font-size: 0.95rem;">
+                   <b>Prediction Date:</b> {target_record['prediction_date']} &nbsp;•&nbsp; 
+                   <b>Category:</b> {target_record['predicted_category']} &nbsp;•&nbsp; 
+                   <b>Risk:</b> {target_record['risk_level']} &nbsp;•&nbsp; 
+                   <b>Performance Score:</b> {target_record['performance_score']}/100 &nbsp;•&nbsp; 
                    <b>Confidence:</b> {target_record['confidence']}%</p>
             </div>
             """, unsafe_allow_html=True)
