@@ -172,7 +172,16 @@ class TestPredictionEngine(unittest.TestCase):
         self.assertEqual(res3["predicted_category"], "Below Average")
         self.assertEqual(res3["risk_level"], "High Risk")
 
-        # Test 4: Normal student should not be affected
+        # Test 4: User screenshot case (hours=5, attendance=9, previous_scores=2, sleep=2)
+        res_screenshot = predict_single_student(
+            student_name="Screenshot Student",
+            roll_number="005",
+            academic_inputs={"Hours_Studied": 5, "Attendance": 9, "Previous_Scores": 2, "Sleep_Hours": 2}
+        )
+        self.assertEqual(res_screenshot["predicted_category"], "Below Average")
+        self.assertEqual(res_screenshot["risk_level"], "High Risk")
+
+        # Test 5: Normal student should not be affected
         res4 = predict_single_student(
             student_name="Good Student",
             roll_number="004",

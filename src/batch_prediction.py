@@ -212,12 +212,6 @@ def process_batch_predictions(
             class_probs = {str(c): round(float(p) * 100, 1) for c, p in zip(classes, proba)}
             confidence = round(float(max(proba)) * 100, 1)
 
-            # Check critical academic threshold rule
-            if academic_data["Hours_Studied"] <= 2 and academic_data["Attendance"] <= 10:
-                pred_label = "Below Average"
-                confidence = 96.0
-                class_probs = {"Below Average": 96.0, **class_probs}
-
             risk_level, risk_score, reasons = calculate_risk(
                 hours_studied=academic_data["Hours_Studied"],
                 attendance=academic_data["Attendance"],
@@ -236,26 +230,42 @@ def process_batch_predictions(
                 sleep_hours=academic_data["Sleep_Hours"]
             )
 
-            if academic_data["Hours_Studied"] <= 2 and academic_data["Attendance"] <= 10:
-                risk_level = "High Risk"
-                critical_reasons = []
-                if academic_data["Attendance"] <= 10:
-                    critical_reasons.append("Critical: Attendance rate is severely low (<=10%)")
-                if academic_data["Hours_Studied"] <= 2:
-                    critical_reasons.append("Critical: Weekly study hours are severely low (<=2 hrs/week)")
-                for cr in reversed(critical_reasons):
-                    if cr not in reasons:
-                        reasons.insert(0, cr)
-                urgent_sugg = "Urgent: Immediate academic intervention and counseling required to address critically low attendance and study hours."
-                if urgent_sugg not in suggestions:
-                    suggestions.insert(0, urgent_sugg)
-
             perf_score = calculate_performance_score(
                 attendance=academic_data["Attendance"],
                 hours_studied=academic_data["Hours_Studied"],
                 previous_scores=academic_data["Previous_Scores"],
                 risk_score=risk_score
             )
+
+            # Check critical academic threshold rule
+            if (
+                (academic_data["Hours_Studied"] <= 5 and academic_data["Attendance"] <= 15) or
+                (academic_data["Attendance"] <= 10 and academic_data["Previous_Scores"] <= 25) or
+                (academic_data["Hours_Studied"] <= 5 and academic_data["Previous_Scores"] <= 15) or
+                (academic_data["Hours_Studied"] <= 2 and academic_data["Attendance"] <= 10) or
+                (perf_score < 40) or
+                (risk_score >= 6 and (academic_data["Attendance"] <= 25 or academic_data["Hours_Studied"] <= 6 or academic_data["Previous_Scores"] <= 25))
+            ):
+                pred_label = "Below Average"
+                confidence = 96.0
+                if "Below Average" not in class_probs:
+                    class_probs = {"Below Average": 96.0, **class_probs}
+                risk_level = "High Risk"
+
+                critical_reasons = []
+                if academic_data["Attendance"] <= 15:
+                    critical_reasons.append(f"Critical: Attendance rate is severely low ({int(academic_data['Attendance'])}%)")
+                if academic_data["Hours_Studied"] <= 5:
+                    critical_reasons.append(f"Critical: Weekly study hours are severely low ({int(academic_data['Hours_Studied'])} hrs/week)")
+                if academic_data["Previous_Scores"] <= 15:
+                    critical_reasons.append(f"Critical: Severely low previous test scores ({int(academic_data['Previous_Scores'])}%)")
+                for cr in reversed(critical_reasons):
+                    if cr not in reasons:
+                        reasons.insert(0, cr)
+
+                urgent_sugg = "Urgent: Immediate academic intervention and counseling required to address critically low attendance and study hours."
+                if urgent_sugg not in suggestions:
+                    suggestions.insert(0, urgent_sugg)
 
             # Record dictionary for database
             rec = {
